@@ -211,7 +211,7 @@
   ========================= */
   .hero-section {
     position: relative;
-    min-height: 55vh;
+    min-height: 60vh;
     background:  url('lashvillahero1.jpeg') center/cover no-repeat; 
 overflow: hidden;
   }
