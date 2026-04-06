@@ -28,13 +28,13 @@
   html {
     scroll-behavior: smooth;
   }
-  
   body {
     font-family: 'Poppins', sans-serif;
     color: var(--text-dark);
     background: var(--white);
     overflow-x: hidden;
     line-height: 1.7;
+    padding-top: 84px;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -138,67 +138,124 @@
   }
   
    
-  .custom-navbar {
-    background: rgba(255, 255, 255, 0.88);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    box-shadow: 0 4px 20px rgba(138, 43, 226, 0.08);
-    padding: 14px 0;
-    transition: all 0.3s ease;
+   /* =========================
+   NAVBAR (FIXED - SAME DESIGN)
+========================= */
+.custom-navbar {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow: 0 4px 20px rgba(138, 43, 226, 0.08);
+  padding: 14px 0;
+  transition: all 0.3s ease;
+  z-index: 1055;
+}
+
+.navbar-brand {
+  font-size: 1.6rem;
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+}
+
+.brand-lash {
+  color: var(--primary-pink);
+}
+
+.brand-villa {
+  color: var(--primary-purple);
+}
+
+.navbar-nav .nav-link {
+  color: var(--text-dark);
+  font-weight: 500;
+  margin-left: 14px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: var(--primary-pink);
+}
+
+.navbar-nav .nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 0;
+  height: 2px;
+  background: var(--gradient-btn);
+  transition: width 0.3s ease;
+  border-radius: 50px;
+}
+
+.navbar-nav .nav-link:hover::after,
+.navbar-nav .nav-link.active::after {
+  width: 100%;
+}
+
+.btn-booking {
+  background: var(--gradient-btn);
+  color: var(--white);
+  border: none;
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-weight: 600;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.3s ease;
+}
+
+.btn-booking:hover {
+  color: var(--white);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-medium);
+}
+
+/* Toggler clean-up */
+.navbar-toggler {
+  border: none;
+  padding: 6px 10px;
+  box-shadow: none !important;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none !important;
+}
+
+/* MOBILE NAV FIX */
+@media (max-width: 991.98px) {
+  .custom-navbar .navbar-collapse {
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    margin-top: 12px;
+    padding: 14px 16px 18px;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(138, 43, 226, 0.10);
   }
-  
-  .navbar-brand {
-    font-size: 1.6rem;
-    font-family: 'Playfair Display', serif;
-    font-weight: 700;
-  }
-  
-  .brand-lash {
-    color: var(--primary-pink);
-  }
-  
-  .brand-villa {
-    color: var(--primary-purple);
-  }
-  
+
   .navbar-nav .nav-link {
-    color: var(--text-dark);
-    font-weight: 500;
-    margin-left: 14px;
-    position: relative;
+    margin-left: 0;
+    padding: 10px 0;
+    display: inline-block;
   }
-  
-  .navbar-nav .nav-link:hover,
-  .navbar-nav .nav-link.active {
-    color: var(--primary-pink);
+
+  .navbar-nav .nav-item:not(:last-child) {
+    border-bottom: 1px solid rgba(138, 43, 226, 0.06);
   }
-  
+
   .navbar-nav .nav-link::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -3px;
-    width: 0;
-    height: 2px;
-    background: var(--gradient-btn);
-    transition: width 0.3s ease;
-    border-radius: 50px;
+    bottom: 4px;
   }
-  
-  .navbar-nav .nav-link:hover::after,
-  .navbar-nav .nav-link.active::after {
-    width: 100%;
-  }
-  
+
   .btn-booking {
-    background: var(--gradient-btn);
-    color: var(--white);
-    border: none;
-    padding: 10px 22px;
-    border-radius: 50px;
-    font-weight: 600;
-    box-shadow: var(--shadow-soft);
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-top: 14px;
   }
+}
   
   .btn-booking:hover {
     color: var(--white);
@@ -206,124 +263,226 @@
     box-shadow: var(--shadow-medium);
   }
   
+   /* =========================
+   HERO SECTION
+========================= */
+.hero-section {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  background: url('lashvillahero1.jpeg') center center / cover no-repeat;
+  overflow: hidden;
+  padding: 40px 0 70px;
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-tag {
+  display: inline-block;
+  background: rgba(255, 94, 188, 0.1);
+  color: var(--primary-pink);
+  padding: 8px 18px;
+  border-radius: 50px;
+  font-weight: 600;
+  margin-bottom: 18px;
+  border: 1px solid rgba(255, 94, 188, 0.15);
+  font-size: 0.9rem;
+}
+
+.hero-title {
+  font-size: 3.4rem;
+  line-height: 1.15;
+  margin-bottom: 18px;
+  font-weight: 700;
+  max-width: 700px;
+}
+
+.hero-title span {
+  background: var(--gradient-btn);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.hero-subtitle {
+  font-size: 1.05rem;
+  color: var(--text-dark);
+  max-width: 620px;
+  margin-bottom: 28px;
+}
+
+.hero-image-card img {
+  border: 8px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 25px 60px rgba(138, 43, 226, 0.18);
+}
+
+.hero-stats {
+  margin-top: 28px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-soft);
+  border-radius: 18px;
+  padding: 14px 10px;
+  text-align: center;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+}
+
+.stat-card h3 {
+  font-size: 1.4rem;
+  margin-bottom: 4px;
+  color: var(--primary-purple);
+  font-weight: 700;
+}
+
+.stat-card p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: var(--text-light);
+  line-height: 1.3;
+}
   /* =========================
-     HERO SECTION
-  ========================= */
+   BUTTONS
+========================= */
+.btn-primary-custom {
+  background: var(--gradient-btn);
+  color: var(--white);
+  border: none;
+  padding: 12px 26px;
+  border-radius: 50px;
+  font-weight: 600;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.3s ease;
+}
+
+.btn-primary-custom:hover {
+  color: var(--white);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-medium);
+}
+
+.btn-outline-custom {
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--primary-purple);
+  border: 2px solid rgba(138, 43, 226, 0.18);
+  padding: 11px 26px;
+  border-radius: 50px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-custom:hover {
+  background: rgba(138, 43, 226, 0.08);
+  color: var(--primary-purple);
+  transform: translateY(-2px);
+}
+
+/* =========================
+   RESPONSIVE HERO FIXES
+========================= */
+
+/* Tablets */
+@media (max-width: 900px) {
   .hero-section {
-    position: relative;
-    min-height: 60vh;
-    background:  url('lashvillahero1.jpeg') center/cover no-repeat; 
-overflow: hidden;
+    min-height: 100vh;
+    padding: 30px 0 60px;
+    background-position: center center;
   }
-  
-  .hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(circle at top right, rgba(255, 94, 188, 0.15), transparent 40%),
-                radial-gradient(circle at bottom left, rgba(138, 43, 226, 0.12), transparent 40%);
-    z-index: 1;
-  }
-  
-  .hero-content {
-    z-index: 2;
-    position: relative;
-  }
-  
-  .hero-tag {
-    display: inline-block;
-    background: rgba(255, 94, 188, 0.1);
-    color: var(--primary-pink);
-    padding: 8px 18px;
-    border-radius: 50px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    border: 1px solid rgba(255, 94, 188, 0.15);
-  }
-  
+
   .hero-title {
-    font-size: 4rem;
-    line-height: 1.15;
-    margin-bottom: 20px;
-    font-weight: 700;
+    font-size: 2.8rem;
   }
-  
-  .hero-title span {
-    background: var(--gradient-btn);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent ;
-  }
-  
+
   .hero-subtitle {
-    font-size: 1.1rem;
-    color: var(--text-dark);
-    max-width: 620px;
+    font-size: 1rem;
   }
-  
-  .hero-image-card img {
-    border: 8px solid rgba(255, 255, 255, 0.7);
-    box-shadow: 0 25px 60px rgba(138, 43, 226, 0.18);
-  }
-  
+
   .hero-stats {
-    margin-top: 30px;
+    margin-top: 24px;
   }
-  
-  .stat-card {
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(12px);
-    border: 1px solid var(--border-soft);
-    border-radius: 20px;
-    padding: 18px 14px;
+}
+/* Mobile */
+@media (max-width: 300px) {
+  .section-padding {
+    padding: 70px 0;
+  }
+
+  .hero-section {
+    min-height: 100vh;
+    padding: 20px 0 50px;
+    background-position: center top;
+  }
+
+  .hero-content {
     text-align: center;
-    box-shadow: var(--shadow-soft);
   }
-  
+
+  .hero-title {
+    font-size: 2.1rem;
+    line-height: 1.2;
+    margin-bottom: 14px;
+  }
+
+  .hero-section .btn-primary-custom,
+  .hero-section .btn-outline-custom {
+    width: 100%;
+    max-width: 320px;
+    display: block;
+    margin: 0 auto 12px;
+    padding: 12px 18px;
+    font-size: 0.95rem;
+  }
+
+  .hero-stats {
+    margin-top: 20px;
+  }
+
+  .stat-card {
+    padding: 12px 8px;
+    border-radius: 16px;
+  }
+
   .stat-card h3 {
-    font-size: 1.7rem;
-    margin-bottom: 4px;
-    color: var(--primary-purple);
+    font-size: 1.15rem;
   }
-  
+
   .stat-card p {
-    margin: 0;
-    font-size: 0.9rem;
-    color: var(--text-light);
+    font-size: 0.75rem;
   }
-  
-  /* =========================
-     BUTTONS
-  ========================= */
-  .btn-primary-custom {
-    background: var(--gradient-btn);
-    color: var(--white);
-    border: none;
-    padding: 14px 28px;
-    border-radius: 50px;
-    font-weight: 600;
-    box-shadow: var(--shadow-soft);
+}
+/* Extra small phones */
+@media (max-width: 100px) {
+  .hero-section {
+    min-height: 100vh;
+    padding: 15px 0 40px;
+    background-position: center top;
   }
-  
-  .btn-primary-custom:hover {
-    color: var(--white);
-    transform: translateY(-3px);
-    box-shadow: var(--shadow-medium);
+
+  .hero-title {
+    font-size: 1.8rem;
   }
-  
-  .btn-outline-custom {
-    background: whitesmoke;
-    color: var(--primary-purple);
-    border: 2px solid rgba(138, 43, 226, 0.25);
-    padding: 12px 28px;
-    border-radius: 50px;
-    font-weight: 600;
+
+  .stat-card {
+    padding: 10px 6px;
   }
-  
-  .btn-outline-custom:hover {
-    background: rgba(138, 43, 226, 0.08);
-    color: var(--primary-purple);
-    transform: translateY(-2px);
+
+  .stat-card h3 {
+    font-size: 1rem;
   }
-  
+
+  .stat-card p {
+    font-size: 0.7rem;
+  }
+}
   /* =========================
      ABOUT SECTION
   ========================= */
@@ -578,28 +737,41 @@ overflow: hidden;
     background: #2d133f;
     color: rgba(255, 255, 255, 0.85);
     padding: 40px 0;
+    overflow: hidden;
   }
   
   .footer-section h5 {
     color: var(--white);
+    margin-bottom: 10px;
+    line-height: 1.3;
   }
   
   .footer-section p {
     color: rgba(255, 255, 255, 0.75);
+    line-height: 1.6;
+  }
+  
+  /* FIXED SOCIAL ICONS */
+  .social-links {
+    display: flex;
+    align-items: center;
+    gap: 10px; /* use gap instead of margin-left on each icon */
+    flex-wrap: wrap;
   }
   
   .social-links a {
     display: inline-flex;
     width: 42px;
     height: 42px;
-    margin-left: 10px;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.08);
     color: var(--white);
     align-items: center;
     justify-content: center;
     font-size: 1rem;
+    text-decoration: none;
     transition: all 0.3s ease;
+    margin-left: 0; /* remove the old issue */
   }
   
   .social-links a:hover {
