@@ -95,7 +95,6 @@ app.post('/submit-form', async (req, res) => {
     const newBooking = new Booking({
       clientName,
       phone,
-      email,
       service,
       lashTech,
       date,
