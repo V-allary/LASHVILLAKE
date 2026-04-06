@@ -152,7 +152,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
       try {
         
-        const response = await fetch("https://lashvillake.onrender.com/submit-form", {
+        const response = await fetch('/submit-form', {
           method: "POST",
           headers: {
             "Content-Type": "application/json"
