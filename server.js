@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const nodemailer = require('nodemailer');
+const fs = require ('fs');
 require('dotenv').config();
 
 const app = express();
@@ -29,14 +30,15 @@ const allowedTimeSlots = [
 
 // Booking Schema
 const bookingSchema = new mongoose.Schema({
-  clientName: { type: String, required: true },
-  phone: { type: String, required: true },
-  service: { type: String, required: true },
-  lashTech: { type: String, required: true },  
-  date: { type: String, required: true },
-  timeSlot: { type: String, required: true },
+  clientName: String,
+  phone: String,  
+  service:String,  
+  lashTech:String,   
+  date: String,  
+  timeSlot: String,  
   status: { type: String, default: 'confirmed' }
-}, { timestamps: true });
+
+},{ timestamps: true });
 
 const Booking = mongoose.model('Booking', bookingSchema);
 
@@ -56,6 +58,10 @@ const transporter = nodemailer.createTransport({
 });
 
 // Booking endpoint
+app.get('/', (req, res)=> {
+  res.sendFile(__dirname + '/index.html');
+});
+
 app.post('/submit-form', async (req, res) => {
   const {
     clientName,
