@@ -49,18 +49,7 @@
      let { name, phone, date, time, lashtech, service } = req.body;
  
      if (!Array.isArray(service)) service = [service];
- 
-     // --- Format phone ---
-     if (phone) {
-       phone = phone.trim();
-       if (phone.startsWith('0')) phone = '+254' + phone.substring(1);
-       else if (!phone.startsWith('+')) phone = '+254' + phone;
-     }
- 
-     // --- Round time to nearest 30 mins ---
-     if (time) {
-       time = roundToNearest30(time);
-     }
+
  
      // --- Prevent double booking ---
      const existingBooking = await Booking.findOne({ date, time, lashtech });
