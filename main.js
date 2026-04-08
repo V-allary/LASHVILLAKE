@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const form = document.getElementById('bookingForm');
+  const form = document.getElementById('booking-form');
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
