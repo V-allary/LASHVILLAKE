@@ -1,56 +1,39 @@
- // main.js
-
 document.addEventListener('DOMContentLoaded', () => {
-  const form = document.querySelector('form');
-  const phoneInput = document.querySelector("#phone");
-  console.log("init zero");
+  const form = document.getElementById('bookingForm');
 
   form.addEventListener('submit', async (e) => {
-      console.log("init submit");
-      e.preventDefault();
+    e.preventDefault();
 
-      const formData = new FormData(form);
-      const data = {};
+    const formData = new FormData(form);
+    const data = {};
 
-      formData.forEach((value, key) => {
-          if (key.endsWith('[]')) { // Handle multiple select array
-              const arrayKey = key.slice(0, -2);
-              if (!data[arrayKey]) {
-                  data[arrayKey] = [];
-              }
-              data[arrayKey].push(value);
-          } else {
-              data[key] = value;
-          }
+    formData.forEach((value, key) => {
+      data[key] = value;
+    });
+
+    if (typeof iti !== "undefined") {
+      data.phone = iti.getNumber();
+    }
+
+    try {
+      const response = await fetch('https://lashvillake.onrender.com/submit-form', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
       });
 
-      // formatted international number
-      data.phone = iti.getNumber();
+      const result = await response.json();
 
-      console.log(data);
-
-      try {
-          const response = await fetch('/submit-form', {
-              method: 'POST',
-              headers: {
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify(data)
-          });
-
-          const result = await response.json();
-          console.log(result);
-
-          if (response.ok) {
-              alert(result.message || JSON.stringify(result));
-              form.reset();
-              iti.setCountry("ke"); // reset back to Kenya
-          } else {
-              alert(result.error || JSON.stringify(result));
-          }
-      } catch (error) {
-          alert('Something went wrong! Please try again later.');
-          console.error(error);
+      if (response.ok) {
+        alert(result.message);
+        form.reset();
+      } else {
+        alert(result.error);
       }
+
+    } catch (error) {
+      console.error(error);
+      alert('Something went wrong!');
+    }
   });
 });

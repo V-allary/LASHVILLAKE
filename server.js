@@ -85,7 +85,7 @@
  
      const mailOptions = {
        from: 'vallarymitchelle257@gmail.com',
-       to: recipientEmail,
+       to: 'vallarymitchelle257@gmail.com',
        subject: 'New Booking – Lashvillake',
        text: `
  New booking received:
