@@ -16,11 +16,10 @@ app.use(express.static(__dirname));
 
 // ===== MongoDB Connection =====
 mongoose.connect(
-  `mongodb+srv://lashvillake:${mdso}@cluster1.ihlfscu.mongodb.net/lashvillake?retryWrites=true&w=majority&appName=Cluster1`
+  `mongodb+srv://lashvillake:${mdso}@cluster1.ihlfscu.mongodb.net/lashvillake?retryWrites=true&w=majority`
 )
-.then(() => console.log(' MongoDB connected'))
+.then(() => console.log('MongoDB connected'))
 .catch(err => console.error('MongoDB error:', err));
-
 
 // ===== Booking Model =====
 const bookingSchema = new mongoose.Schema({
