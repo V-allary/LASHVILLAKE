@@ -18,58 +18,59 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-// ===== Contact / Booking Route =====
+// ===== Booking Route =====
 app.post('/submit-form', async (req, res) => {
   try {
     const { name, phone, service, lashtech, date, time } = req.body;
 
+    // ===== Validation =====
     if (!name || !phone || !service || !lashtech || !date || !time) {
       return res.status(400).json({ message: 'All fields are required' });
     }
 
     const recipientEmail = 'vallarymitchelle257@gmail.com';
 
-    // Email transporter
+    // ===== Email Transporter =====
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: recipientEmail,
-        pass: process.env.PTSO, 
+        pass: process.env.PTSO, // Gmail App Password
       },
     });
 
-    // Email content
+    // ===== Email Content =====
     const mailOptions = {
-      from: `"lashvilla ke Website" <${recipientEmail}>`,
+      from: `"LashVilla Booking" <${recipientEmail}>`,
       to: recipientEmail,
-      replyTo: email,
-      subject: 'New Booking – Lashvilla_Ke',
+      subject: 'New Booking – LashVilla Kenya',
       text: `
-          Name: ${name}
-          Phone: ${phone}
-          Service: ${service}
-          Lash Tech: ${lashtech}
-          Date: ${date}
-          Time: ${time}
-          `  
+NEW BOOKING RECEIVED 💖
+
+Name: ${name}
+Phone: ${phone}
+Service: ${service}
+Lash Tech: ${lashtech}
+Date: ${date}
+Time: ${time}
+      `
     };
 
-    // Send email
-    transporter.sendMail(mailOptions, (err) => {
-      if (err) {
-        console.error('Email error:', err);
-        return res.redirect('/?error=true');
-      }
+    // ===== Send Email =====
+    await transporter.sendMail(mailOptions);
 
-      // SUCCESS → redirect back to homepage
-      res.redirect('/?success=true');
-    });
+    console.log("Email sent successfully");
+
+    // ===== Send Response to Frontend =====
+    res.status(200).json({ message: "Booking sent successfully" });
 
   } catch (error) {
-    console.error('Server error:', error);
-    res.redirect('/?error=true');
+    console.error(" Email error:", error);
+
+    res.status(500).json({ message: "Email failed to send" });
   }
-})
+});
+
 // ===== Start Server =====
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
