@@ -14,11 +14,10 @@
  
  // ================== MongoDB Connection ==================
  mongoose.connect(
-   `mongodb+srv://lashvillake:${mdso}@cluster1.ihlfscu.mongodb.netlashvillake?retryWrites=true&w=majority&appName=Cluster1`
- )
-   .then(() => console.log('MongoDB connected'))
-   .catch(err => console.error('MongoDB error:', err));
- 
+  `mongodb+srv://lashvillake:${mdso}@cluster1.ihlfscu.mongodb.net/lashvillake?retryWrites=true&w=majority&appName=Cluster1`
+)
+.then(() => console.log('MongoDB connected'))
+.catch(err => console.error(' MongoDB error:', err));
  // ================== Schema ==================
  const bookingSchema = new mongoose.Schema({
    name: String,
