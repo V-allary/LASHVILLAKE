@@ -3,15 +3,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   const form = document.querySelector('form');
   const phoneInput = document.querySelector("#phone");
-
-  // ✅ Initialize intl-tel-input in professional mode (Option 1)
-  const iti = window.intlTelInput(phoneInput, {
-      initialCountry: "ke",   // Default Kenya
-      separateDialCode: false, // No inline dial code
-      nationalMode: false,    // Always full format (+254...)
-      utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.19/js/utils.js"
-  });
-
   console.log("init zero");
 
   form.addEventListener('submit', async (e) => {
