@@ -1,125 +1,124 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const nodemailer = require('nodemailer');
-require('dotenv').config();
-
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-const allowedTimeSlots = [
-  "08:00-10:00",
-  "10:00-12:00",
-  "12:00-14:00",
-  "14:00-16:00",
-  "16:00-18:00",
-  "18:00-20:00"
-];
-
-const bookingSchema = new mongoose.Schema({
-  clientName: String,
-  phone: String,
-  service: String,
-  lashTech: String,
-  date: String,
-  timeSlot: String,
-  status: { type: String, default: 'confirmed' }
-}, { timestamps: true });
-
-const Booking = mongoose.model('Booking', bookingSchema);
-
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: 'vallarymitchelle257@gmail.com',
-    pass: process.env.EMAIL_PASS
-  }
-});
-
-app.get('/', (req, res) => {
-  res.send('LashVilla API is running');
-});
-
-app.post('/submit-form', async (req, res) => {
-  const { clientName, phone, service, lashTech, date, timeSlot } = req.body;
-
-  try {
-    if (!clientName || !phone || !service || !lashTech || !date || !timeSlot) {
-      return res.status(400).json({ message: 'Please fill in all required booking fields.' });
-    }
-
-    if (!allowedTimeSlots.includes(timeSlot)) {
-      return res.status(400).json({ message: `Invalid time slot. Allowed slots: ${allowedTimeSlots.join(', ')}` });
-    }
-
-    const existingBooking = await Booking.findOne({ lashTech, date, timeSlot });
-    if (existingBooking) {
-      return res.status(400).json({
-        message: `${lashTech} is already booked on ${date} at ${timeSlot}.`
-      });
-    }
-
-    const newBooking = new Booking({
-      clientName,
-      phone,
-      service,
-      lashTech,
-      date,
-      timeSlot
-    });
-
-    await newBooking.save();
-
-    try {
-      await transporter.sendMail({
-        from: 'vallarymitchelle257@gmail.com',
-        to: 'vallarymitchelle257@gmail.com',
-        subject: 'New LashVilla Booking Received',
-        html: `
-          <h2>New Booking Alert - LashVilla</h2>
-          <p><strong>Client Name:</strong> ${clientName}</p>
-          <p><strong>Phone:</strong> ${phone}</p>
-          <p><strong>Service:</strong> ${service}</p>
-          <p><strong>Lash Tech:</strong> ${lashTech}</p>
-          <p><strong>Date:</strong> ${date}</p>
-          <p><strong>Time Slot:</strong> ${timeSlot}</p>
-        `
-      });
-    } catch (emailError) {
-      console.error('Email failed:', emailError.message);
-    }
-
-    return res.status(200).json({
-      message: 'Booking confirmed!',
-      booking: newBooking
-    });
-  } catch (error) {
-    console.error('Booking error:', error);
-    return res.status(500).json({
-      message: 'Server error while processing booking.',
-      error: error.message
-    });
-  }
-});
-
-async function startServer() {
-  try {
-    await mongoose.connect(
-      `mongodb+srv://lashvillake:${process.env.MDSO}@cluster1.ihlfscu.mongodb.net/lashvillake?retryWrites=true&w=majority&appName=Cluster1`
-    );
-
-    console.log('Connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`LashVilla server running on port ${PORT}`);
-    });
-  } catch (err) {
-    console.error('MongoDB connection failed:', err);
-    process.exit(1);
-  }
-}
-
-startServer();
+// ================== Imports ==================
+ const express = require('express');
+ const nodemailer = require('nodemailer');
+ const bodyParser = require('body-parser');
+ const cors = require('cors');
+ const fs = require('fs');
+ const mongoose = require('mongoose');
+ require('dotenv').config();
+ 
+ // ================== App Setup ==================
+ const app = express();
+ const PORT = process.env.PORT || 3000;
+ const mdso = process.env.MDSO; // MongoDB password from Render env
+ 
+ // ================== MongoDB Connection ==================
+ mongoose.connect(
+   `mongodb+srv://lashvillake:${mdso}@cluster1.ihlfscu.mongodb.netlashvillake?retryWrites=true&w=majority&appName=Cluster1`
+ )
+   .then(() => console.log('MongoDB connected'))
+   .catch(err => console.error('MongoDB error:', err));
+ 
+ // ================== Schema ==================
+ const bookingSchema = new mongoose.Schema({
+   name: String,
+   phone: String,
+   date: String,
+   time: String,
+   lashtech: String,
+   service: [String],
+   reminded: { type: Boolean, default: false }, // track if reminder SMS sent
+   createdAt: { type: Date, default: Date.now },
+ });
+ 
+ const Booking = mongoose.model('Booking', bookingSchema);
+ 
+ // ================== Middleware ==================
+ app.use(cors());
+ app.use(bodyParser.urlencoded({ extended: true }));
+ app.use(bodyParser.json());
+ app.use(express.static(__dirname));
+ 
+ // Homepage
+ app.get('/', (req, res) => {
+   res.sendFile(__dirname + '/index.html');
+ });
+ 
+ // Booking submission
+ app.post('/submit-form', async (req, res) => {
+   try {
+     let { name, phone, date, time, lashtech, service } = req.body;
+ 
+     if (!Array.isArray(service)) service = [service];
+ 
+     // --- Format phone ---
+     if (phone) {
+       phone = phone.trim();
+       if (phone.startsWith('0')) phone = '+254' + phone.substring(1);
+       else if (!phone.startsWith('+')) phone = '+254' + phone;
+     }
+ 
+     // --- Round time to nearest 30 mins ---
+     if (time) {
+       time = roundToNearest30(time);
+     }
+ 
+     // --- Prevent double booking ---
+     const existingBooking = await Booking.findOne({ date, time, lashtech });
+     if (existingBooking) {
+       return res.status(400).json({
+         error: `This lashtech is already booked on ${date} at ${time}. Please choose another time.`,
+       });
+     }
+ 
+     // --- Save booking ---
+     const newBooking = new Booking({ name, phone, date, time,  lashtech, service });
+     await newBooking.save()
+ 
+     // --- Email notification ---
+     const transporter = nodemailer.createTransport({
+       service: 'gmail',
+       auth: {
+         user: 'vallarymitchelle257@gmail.com',
+         pass: process.env.PTSO,
+       },
+     });
+ 
+     const mailOptions = {
+       from: 'vallarymitchelle257@gmail.com',
+       to: recipientEmail,
+       subject: 'New Booking – Lashvillake',
+       text: `
+ New booking received:
+ 
+ Name: ${name}
+ Phone: ${phone}
+ Date: ${date}
+ Time: ${time}
+ Tech: ${lashtech || 'Not selected'}
+ Services: ${service.join(', ')}
+       `,
+     };
+ 
+     transporter.sendMail(mailOptions, (err, info) => {
+       if (err) {
+         console.error('Email error:', err);
+         return res.status(500).json({ error: 'Failed to send email' });
+       }
+       console.log('Email sent:', info.response);
+       res.status(200).json({ message: 'Booking received, email & SMS sent!' });
+     });
+ 
+   } catch (error) {
+     console.error('Server error:', error);
+     res.status(500).json({ error: 'Internal server error' });
+   }
+ });
+ 
+ // ================== Start Server ==================
+ app.listen(PORT, () => {
+   console.log(`Server running on port ${PORT}`);
+ });
+ 
+ // ================== Export Booking Model ==================
+ module.exports = Booking;

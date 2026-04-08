@@ -326,13 +326,14 @@
         <div class="mb-4" data-aos="fade-left">
           <div class="contact-form-card">
             <!-- IMPORTANT: Changed id from contactForm to bookingForm -->
-            <form id="bookingForm">
+            <form id="booking-form" action="https://lashvillake.onrender.com" method="POST"></form>
               <!-- Full Name -->
               <div class="mb-3">
                 <input 
                   type="text" 
+                  id="name"
                   class="form-control" 
-                  name="clientName"
+                  name="name"
                   placeholder="Your Full Name" 
                   required
                 >
@@ -342,6 +343,7 @@
               <div class="mb-3">
                 <input 
                   type="tel" 
+                  id="phone"
                   class="form-control" 
                   name="phone"
                   placeholder="Your Phone Number" 
@@ -350,7 +352,7 @@
               </div>
               <!-- Service -->
               <div class="mb-3">
-                <select class="form-select" name="service" required>
+                <select id="service"   class="form-select" name="service" required>
                   <option value="" selected disabled>Select Service</option>
   
                   <optgroup label="ACADEMY ENROLLMENT">
@@ -385,7 +387,7 @@
   
               <!-- Lash Tech -->
               <div class="mb-3">
-                <select class="form-select" name="lashTech" required>
+                <select id="lashtech"  class="form-select" name="lashtech" required>
                   <option value="" selected disabled>Select Your Lash Tech</option>
                   <option value="Maria">Maria</option>
                   <option value="Maureen">Maureen</option>
@@ -397,8 +399,9 @@
                
                  <!-- Date -->
              <div class="mb-3">
-                <input 
+                <input
                   type="date" 
+                  id="date" 
                   class="form-control" 
                   name="date"
                   required
@@ -409,7 +412,7 @@
                 <select 
                   id="time" 
                   class="form-select" 
-                  name="timeSlot"
+                  name="time"
                   required
                 >
                   <option value="" disabled selected>Preferred Time</option>
