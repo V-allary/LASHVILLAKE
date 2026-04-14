@@ -7,7 +7,7 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const mdso = process.env.MDSO;
+ 
 
 // ===== Middleware =====
 app.use(cors());
