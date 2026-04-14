@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const timeSelect = document.getElementById("time");
 
   // =========================
-  // LOAD AVAILABLE TIMES
+  // UPDATE AVAILABLE TIMES
   // =========================
   async function updateAvailableTimes() {
     if (!lashtech.value || !date.value) return;
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
 
-      // Disable booked times
+      // Disable booked ones
       bookedTimes.forEach(time => {
         const option = [...timeSelect.options].find(opt => opt.value === time);
         if (option) {
@@ -33,16 +33,15 @@ document.addEventListener("DOMContentLoaded", () => {
       });
 
     } catch (error) {
-      console.error("Error fetching times:", error);
+      console.error("Error loading available times:", error);
     }
   }
 
   lashtech.addEventListener("change", updateAvailableTimes);
   date.addEventListener("change", updateAvailableTimes);
 
-
   // =========================
-  // FORM SUBMIT
+  // FORM SUBMISSION
   // =========================
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -57,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
     };
 
     try {
-      const response = await fetch("https://lashvillake.onrender.com/submit-form", {
+      const response = await fetch("/submit-form", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -71,7 +70,7 @@ document.addEventListener("DOMContentLoaded", () => {
         showLuxuryAlert(result.message || "Booking successful 💖");
         form.reset();
 
-        // Reset time options
+        // Reset time dropdown
         [...timeSelect.options].forEach(option => {
           option.disabled = false;
           option.textContent = option.value;
@@ -82,11 +81,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
     } catch (error) {
-      console.error("Error submitting booking:", error);
+      console.error("Submit error:", error);
       showLuxuryAlert("Server error ⚠️");
     }
   });
-
 
   // =========================
   // LUXURY ALERT
@@ -115,7 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 4000);
   }
 
-
   // =========================
   // SCROLL TO TOP BUTTON
   // =========================
@@ -137,48 +134,6 @@ document.addEventListener("DOMContentLoaded", () => {
     window.scrollTo({
       top: 0,
       behavior: "smooth"
-    });
-  });
-
-
-  // =========================
-  // ACTIVE NAV LINK
-  // =========================
-  const sections = document.querySelectorAll("section[id]");
-  const navLinks = document.querySelectorAll(".nav-link");
-
-  window.addEventListener("scroll", () => {
-    let current = "";
-
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop - 120;
-      const sectionHeight = section.offsetHeight;
-
-      if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-        current = section.getAttribute("id");
-      }
-    });
-
-    navLinks.forEach(link => {
-      link.classList.remove("active");
-      if (link.getAttribute("href").includes(current)) {
-        link.classList.add("active");
-      }
-    });
-  });
-
-
-  // =========================
-  // CLOSE MOBILE NAV
-  // =========================
-  const navItems = document.querySelectorAll(".navbar-nav .nav-link");
-  const navbarCollapse = document.getElementById("mainNav");
-
-  navItems.forEach(item => {
-    item.addEventListener("click", () => {
-      if (navbarCollapse.classList.contains("show")) {
-        new bootstrap.Collapse(navbarCollapse).hide();
-      }
     });
   });
 
