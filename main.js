@@ -28,7 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const option = [...timeSelect.options].find(opt => opt.value === time);
         if (option) {
           option.disabled = true;
-          option.textContent = option.value + " (Booked ❌)";
+          option.textContent = option.value + " (Lash Tech Already Booked at this time , Please Book a Diffrent time.)";
         }
       });
 
