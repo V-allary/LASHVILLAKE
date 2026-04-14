@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const mdso = process.env.MDSO;
 
 // =========================
 // MIDDLEWARE
@@ -19,7 +20,9 @@ app.use(express.static(__dirname));
 // =========================
 // MONGODB CONNECTION
 // =========================
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect( 
+   `mongodb+srv://lashvillake:${mdso}@cluster1.ihlfscu.mongodb.net/lashvillake?retryWrites=true&w=majority&app=NameCluster1`
+)
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(" MongoDB Error:", err));
 
