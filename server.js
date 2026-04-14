@@ -7,23 +7,25 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
- 
 
-// ===== Middleware =====
+// =========================
+// MIDDLEWARE
+// =========================
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
-// ===== MongoDB Connection =====
-mongoose.connect(
-  `mongodb+srv://lashvillake:${mdso}@cluster1.ihlfscu.mongodb.net/lashvillake?retryWrites=true&w=majority&appName=Cluster1`
-)
-.then(() => console.log(' MongoDB connected'))
-.catch(err => console.error('MongoDB error:', err));
+// =========================
+// MONGODB CONNECTION
+// =========================
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB Connected"))
+  .catch(err => console.log(" MongoDB Error:", err));
 
-
-// ===== Booking Model =====
+// =========================
+// BOOKING MODEL
+// =========================
 const bookingSchema = new mongoose.Schema({
   name: String,
   phone: String,
@@ -35,12 +37,16 @@ const bookingSchema = new mongoose.Schema({
 
 const Booking = mongoose.model("Booking", bookingSchema);
 
-// ===== Homepage Route =====
+// =========================
+// HOME ROUTE
+// =========================
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-// ===== GET AVAILABLE TIMES =====
+// =========================
+// GET AVAILABLE TIMES
+// =========================
 app.get('/available-times', async (req, res) => {
   try {
     const { lashtech, date } = req.query;
@@ -60,12 +66,14 @@ app.get('/available-times', async (req, res) => {
   }
 });
 
-// ===== BOOKING ROUTE =====
+// =========================
+// BOOKING ROUTE
+// =========================
 app.post('/submit-form', async (req, res) => {
   try {
     const { name, phone, service, lashtech, date, time } = req.body;
 
-    // ===== Validation =====
+    // ===== VALIDATION =====
     if (!name || !phone || !service || !lashtech || !date || !time) {
       return res.status(400).json({ message: 'All fields are required' });
     }
@@ -95,8 +103,9 @@ app.post('/submit-form', async (req, res) => {
 
     await newBooking.save();
 
+    console.log(`📅 Booked: ${lashtech} | ${date} | ${time}`);
 
-    // ===== EMAIL SECTION =====
+    // ===== EMAIL =====
     const recipientEmail = 'vallarymitchelle257@gmail.com';
 
     const transporter = nodemailer.createTransport({
@@ -123,21 +132,23 @@ Time: ${time}
       `
     });
 
-    console.log("✅ Booking saved & email sent");
+    console.log("✅ Email sent");
 
     res.status(200).json({
       message: "Booking successful 💖"
     });
 
   } catch (error) {
-    console.error(" Booking error:", error);
+    console.error("Booking error:", error);
     res.status(500).json({
       message: "Server error"
     });
   }
 });
 
-// ===== START SERVER =====
+// =========================
+// START SERVER
+// =========================
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });

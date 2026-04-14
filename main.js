@@ -1,21 +1,59 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-  // =========================
-  // BOOKING FORM SUBMIT
-  // =========================
   const form = document.getElementById("booking-form");
+  const lashtech = document.getElementById("lashtech");
+  const date = document.getElementById("date");
+  const timeSelect = document.getElementById("time");
 
+  // =========================
+  // LOAD AVAILABLE TIMES
+  // =========================
+  async function updateAvailableTimes() {
+    if (!lashtech.value || !date.value) return;
+
+    try {
+      const res = await fetch(`/available-times?lashtech=${lashtech.value}&date=${date.value}`);
+      const bookedTimes = await res.json();
+
+      // Reset all options
+      [...timeSelect.options].forEach(option => {
+        if (option.value !== "") {
+          option.disabled = false;
+          option.textContent = option.value;
+        }
+      });
+
+      // Disable booked times
+      bookedTimes.forEach(time => {
+        const option = [...timeSelect.options].find(opt => opt.value === time);
+        if (option) {
+          option.disabled = true;
+          option.textContent = option.value + " (Booked ❌)";
+        }
+      });
+
+    } catch (error) {
+      console.error("Error fetching times:", error);
+    }
+  }
+
+  lashtech.addEventListener("change", updateAvailableTimes);
+  date.addEventListener("change", updateAvailableTimes);
+
+
+  // =========================
+  // FORM SUBMIT
+  // =========================
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    // Collect form data
     const data = {
       name: document.getElementById("name").value,
       phone: document.getElementById("phone").value,
       service: document.getElementById("service").value,
-      lashtech: document.getElementById("lashtech").value,
-      date: document.getElementById("date").value,
-      time: document.getElementById("time").value
+      lashtech: lashtech.value,
+      date: date.value,
+      time: timeSelect.value
     };
 
     try {
@@ -27,22 +65,31 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify(data)
       });
 
+      const result = await response.json();
+
       if (response.ok) {
-        showLuxuryAlert("Booking submitted successfully 💖");
+        showLuxuryAlert(result.message || "Booking successful 💖");
         form.reset();
+
+        // Reset time options
+        [...timeSelect.options].forEach(option => {
+          option.disabled = false;
+          option.textContent = option.value;
+        });
+
       } else {
-        showLuxuryAlert("Something went wrong ❌");
+        showLuxuryAlert(result.message || "Booking failed ❌");
       }
 
     } catch (error) {
-      console.error("Error:", error);
+      console.error("Error submitting booking:", error);
       showLuxuryAlert("Server error ⚠️");
     }
   });
 
 
   // =========================
-  // LUXURY ALERT FUNCTION
+  // LUXURY ALERT
   // =========================
   function showLuxuryAlert(message) {
     const alert = document.createElement("div");
@@ -59,12 +106,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setTimeout(() => alert.classList.add("show"), 100);
 
-    // Close button
     alert.querySelector(".luxury-alert-close").onclick = () => {
       alert.remove();
     };
 
-    // Auto remove
     setTimeout(() => {
       alert.remove();
     }, 4000);
@@ -97,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // =========================
-  // ACTIVE NAV LINK ON SCROLL
+  // ACTIVE NAV LINK
   // =========================
   const sections = document.querySelectorAll("section[id]");
   const navLinks = document.querySelectorAll(".nav-link");
@@ -109,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const sectionTop = section.offsetTop - 120;
       const sectionHeight = section.offsetHeight;
 
-      if (pageYOffset >= sectionTop && pageYOffset < sectionTop + sectionHeight) {
+      if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
         current = section.getAttribute("id");
       }
     });
@@ -124,7 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
   // =========================
-  // CLOSE MOBILE NAV ON CLICK
+  // CLOSE MOBILE NAV
   // =========================
   const navItems = document.querySelectorAll(".navbar-nav .nav-link");
   const navbarCollapse = document.getElementById("mainNav");
