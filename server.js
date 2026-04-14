@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+const mdso = process.env.MDSO;
 
 // ===== Middleware =====
 app.use(cors());
@@ -16,10 +17,11 @@ app.use(express.static(__dirname));
 
 // ===== MongoDB Connection =====
 mongoose.connect(
-  `mongodb+srv://lashvillake:${mdso}@cluster1.ihlfscu.mongodb.net/lashvillake?retryWrites=true&w=majority`
+  `mongodb+srv://lashvillake:${mdso}@cluster1.ihlfscu.mongodb.net/lashvillake?retryWrites=true&w=majority&appName=Cluster1`
 )
-.then(() => console.log('MongoDB connected'))
+.then(() => console.log(' MongoDB connected'))
 .catch(err => console.error('MongoDB error:', err));
+
 
 // ===== Booking Model =====
 const bookingSchema = new mongoose.Schema({
